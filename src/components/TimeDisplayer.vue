@@ -5,7 +5,7 @@
       '--small': type === TYPE.SMALL,
     }"
   >
-    <span>{{ value / 1000 }} sec</span>
+    <span>{{ (value / 1000).toFixed(1) }} sec</span>
   </div>
 </template>
 <script>
@@ -42,7 +42,10 @@ export default {
 </script>
 <style scoped>
 .timer {
+  font-size: 2.5em;
+  font-weight: bold;
 }
 .timer.--small {
+  font-size: 1em;
 }
 </style>

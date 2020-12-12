@@ -8,11 +8,15 @@
       width: `${this.size}px`,
       height: `${this.size}px`,
       borderRadius: `${this.size / 2}px`,
-      background: this.color,
+      color: this.color,
     }"
   >
     <span class="name">{{ name }}</span>
-    <TimeDisplayer :timeValue="time" :type="'small'" />
+    <TimeDisplayer 
+      v-if="time > 0"
+      :timeValue="time"
+      :type="'small'" 
+    />
   </div>
 </template>
 
@@ -64,12 +68,17 @@ export default {
 .piece {
   min-width: 30px;
   min-height: 30px;
+  font-weight: bold;
   display: flex;
   flex-flow: column wrap;
   justify-content: center;
   align-items: center;
+  border: 2px solid darkslategray;
+  background: white;
 }
-
+.name {
+  font-size: 1.3em;
+}
 .piece.--turned {
   transform: scale(1.3);
   transition: 0.3s;
