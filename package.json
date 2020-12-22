@@ -3,14 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "start": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "@vue/cli-plugin-babel": "4.1.1",
     "gsap": "3.5.1",
-    "turn-state-manager": "0.9.5",
+    "turn-state-manager": "^1.0.0",
     "vue": "^2.6.11"
   },
   "devDependencies": {
@@ -19,6 +19,8 @@
     "babel-eslint": "^10.0.3",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.0.1",
+    "node-sass": "^5.0.0",
+    "sass-loader": "^10.1.0",
     "vue-template-compiler": "^2.6.11"
   },
   "eslintConfig": {

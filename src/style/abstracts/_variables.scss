@@ -1,0 +1,22 @@
+/** Color */
+// first-level
+$white: #f5f5f5;
+$yellow: #ffee38;
+$dark-gray: #4f5261;
+
+// second-level
+$text-color: $white;
+$primary-color: $yellow;
+$bg-color: $dark-gray;
+
+/** Typography */
+//size
+$font-unit: 1em;
+$font-scale-ratio: 1.2;
+$font-xs: calc($font-unit / $font-scale-ratio * $font-scale-ratio);
+$font-s: calc($font-unit / $font-scale-ratio);
+$font-m: calc($font-unit * $font-scale-ratio);
+$font-l: calc($font-unit * $font-scale-ratio * $font-scale-ratio);
+$font-xl: calc($font-unit * $font-scale-ratio * $font-scale-ratio * $font-scale-ratio);
+$font-xxl: calc($font-unit * $font-scale-ratio * $font-scale-ratio * $font-scale-ratio * $font-scale-ratio);
+$font-xxxl: calc($font-unit * $font-scale-ratio * $font-scale-ratio * $font-scale-ratio * $font-scale-ratio * $font-scale-ratio);
