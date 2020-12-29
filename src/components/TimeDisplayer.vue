@@ -5,7 +5,7 @@
       '--small': type === TYPE.SMALL,
     }"
   >
-    <span>{{ (value / 1000).toFixed(1) }} sec</span>
+    <span class="time">{{ (value / 1000).toFixed(1) }} <span class="unit">sec</span></span>
   </div>
 </template>
 <script>
@@ -40,10 +40,19 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style lang="scss" scoped>
+@import 'src/style/main';
+
 .timer {
   font-size: 2.5em;
   font-weight: bold;
+  .time {
+    text-align: right;
+  }
+  .unit {
+    font-size: $font-xs;
+    font-weight: normal;
+  }
 }
 .timer.--small {
   font-size: 1em;
