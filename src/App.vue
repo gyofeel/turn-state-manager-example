@@ -1,13 +1,19 @@
 <template>
   <div id="app">
+    <div class="bg"></div> 
     <div class="main-wrap">
       <section class="header">
-        <div class="displayer-title">TOTAL</div>
-        <TimeDisplayer
-          class="total-time-displayer"
-          :timeValue="totalTime"
-          :type="'large'"
-        />
+        <div class="title-wrap">
+          <span class="title">Turn State Manager</span>
+        </div>
+        <div class="total-timer-wrap">
+          <!-- <div class="displayer-title">COUNT</div> -->
+          <TimeDisplayer
+            class="total-time-displayer"
+            :timeValue="totalTime"
+            :type="'large'"
+          />
+        </div>
       </section>
       <section class="content">
         <div class="players-container">
@@ -19,43 +25,39 @@
             :time="index === turnIndex ? turnTime : 0"
           />
         </div>
+        <div class="info-container">
+            <Controller
+              class="turn-controller"
+              @control="onControl"
+            />
+          <div class="command-wrap">
+            <CommandDisplayer
+              class="turn-command-displayer"
+            />
+          </div>
+        </div>
       </section>
-      <div class="controll-container">
-        <label class="auto-turnover-controller"
-          ><input type="checkbox" />Auto Turnover</label
-        >
-        <label class="loop-controller"><input type="checkbox" />Loop</label>
-        <button 
-          class=""
-          @click="onClickNextTurn"
-        >
-          Next Turn!
-        </button>
-        <button 
-          class=""
-          @click="onClickPrevTurn"
-        >
-          Prev Turn!
-        </button>
-        <button class="">Finish The Game</button>
-      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { TurnStateManager, EVENT } from "turn-state-manager";
+import { turnStateManager, EVENT } from "turn-state-manager";
 
-import TimeDisplayer from "./components/TimeDisplayer";
 import Piece from "./components/Piece";
+import TimeDisplayer from "./components/TimeDisplayer";
+import CommandDisplayer from './components/CommandDisplayer';
+import Controller from './components/Controller';
 
-const PLAER_NAME_LIST = ["Kim", "Noh", "Seo", "Jang", "Choi"];
+const PLAER_NAME_LIST = ["A", "B", "C", "D", "E"];
 
 export default {
   name: "App",
   components: {
-    TimeDisplayer,
     Piece,
+    TimeDisplayer,
+    CommandDisplayer,
+    Controller
   },
   data() {
     return {
@@ -68,20 +70,21 @@ export default {
       }),
       turnIndex: 0,
       turnTime: 0,
-      totalTime: 0
+      totalTime: 0,
+      isAuto: true,
+      isLoop: true
     };
   },
   created() {
-    const turnStateManager = TurnStateManager.getInstance();
     this.turnGame = turnStateManager.setGame("turnGameId", {
       turnIndex: 0,
       turnNumber: this.playerList.length,
-      turnTime: 5000,
-      // totalTime: 30000,
+      turnTime: 2000,
+      totalTime: 50000,
       turnTimeTickCallback: this.onTurnTimeTick,
       totalTimeTickCallback: this.onTotalTimeTick,
-      auto: true,
-      loop: true,
+      auto: this.isAuto,
+      loop: this.isLoop,
     });
     this.turnGame.on(EVENT.START, this.onStart);
     this.turnGame.on(EVENT.PREV_TURN, this.onPrevTurn);
@@ -90,16 +93,34 @@ export default {
     this.turnGame.on(EVENT.END, this.onEnd);
     this.turnGame.start();
 
-    setTimeout(() => {
-      this.turnGame.emit(EVENT.PREV_TURN);
-    }, 15000);
+    // setTimeout(() => {
+    //   this.turnGame.emit(EVENT.PREV_TURN);
+    // }, 15000);
   },
   methods: {
-    onClickNextTurn() {
-      this.turnGame.emit(EVENT.NEXT_TURN);
-    },
-    onClickPrevTurn() {
-      this.turnGame.emit(EVENT.PREV_TURN);
+    // onToggleAuto() {
+    //   this.isAuto = !this.isAuto;
+    //   this.turnGame.setAutoOption(this.isAuto);
+    // },
+    // onToggleLoop() {
+    //   this.isLoop = !this.isLoop;
+    //   this.turnGame.setLoopOption(this.isLoop);
+    // },
+    // onClickNextTurn() {
+    //   this.turnGame.emit(EVENT.NEXT_TURN);
+    // },
+    // onClickPrevTurn() {
+    //   this.turnGame.emit(EVENT.PREV_TURN);
+    // },
+    // onClickBegin() {
+    //   this.turnGame.emit(EVENT.END);
+    //   this.turnGame.start();
+    // },  
+    // onClickFinish() {
+    //   this.turnGame.emit(EVENT.END);
+    // },
+    onControl(e) {
+      console.log(e);
     },
     onStart(e) {
       this.turnIndex = e.index;
@@ -110,56 +131,80 @@ export default {
     onNextTurn(e) {
       this.turnIndex = e.index;
     },
-    // onComplete(e) {},
-    // onEnd(e) {},
+    onComplete(e) {
+      console.log(e.type);
+    },
+    onEnd(e) {
+      console.log(e.type);
+    },
     onTurnTimeTick(e) {
-      this.turnTime = e.timerCount;
+      this.turnTime = 2000 - e.timerCount;
     },
     onTotalTimeTick(e) {
-      this.totalTime = e.timerCount;
+      this.totalTime = 50000 - e.timerCount;
     },
   },
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import 'src/style/main';
+
+.bg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: $bg-color;
+  z-index: -1;
+}
 .main-wrap {
   display: flex;
   flex-flow: column nowrap;
+  align-items: center;
+  color: $text-color;
+  width: 100%;
 }
 .header {
   display: flex;
-  flex-flow: column nowrap;
+  flex-flow: row wrap;
+  justify-content: space-between;
   align-items: center;
-  position: absolute;
-  transform: translate(-50%, 0);
-  top: 25px;
-  left: 50%;
-}
-.displayer-title {
-  padding-bottom: 10px;
+  width: 90%;
+  height: 100px;
+  .title {
+    font-size: $font-m;
+    font-weight: bold;
+  }
+
+  .total-timer-wrap {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: flex-end;
+    .displayer-title {
+      padding-bottom: 10px;
+    }
+  }
 }
 
 .content {
   width: 100%;
   display: flex;
-  justify-content: center;
-  position: absolute;
-  transform: translate(-50%, -50%);
-  left: 50%;
-  top: 40%;
-}
-
-.players-container {
-  width: 85%;
-  display: flex;
-  justify-content: space-around;
-}
-
-.controll-container {
-  position: absolute;
-  transform: translate(-50%, 0);
-  bottom: 50px;
-  left: 50%;
+  flex-flow: column nowrap;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 130px;
+  
+  .players-container {
+    width: 85%;
+    display: flex;
+    justify-content: space-between;
+  }
+  .info-container {
+    width: 85%;
+    margin-top: 15%;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+  }
 }
 </style>
