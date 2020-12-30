@@ -1,5 +1,9 @@
 <template>
 <div class="piece-wrap">
+  <div 
+    v-if="isTurn"
+    class="turn-ring"
+  ></div>
   <div
     class="piece"
     :class="{
@@ -20,10 +24,6 @@
       :type="'small'" 
     />
   </div>
-  <div 
-    v-if="isTurn"
-    class="turn-ring"
-  ></div>
 </div>
 </template>
 
@@ -73,6 +73,7 @@ export default {
 
 <style lang="scss" scoped>
 @import 'src/style/main';
+
 .piece-wrap {
   position: relative;
 }
@@ -104,6 +105,14 @@ export default {
     background: white;
     border-radius: 50%;
   }
+  &.--turned {
+    transform: scale(1.3);
+
+    &::before {
+      animation: 0.5s infinite turn-flow;
+      
+    }
+  }
 }
 .name {
   font-size: 1.3em;
@@ -114,18 +123,69 @@ export default {
   color: $dark-gray;
   z-index: 10;
 }
-.piece.--turned {
-  transform: scale(1.3);
-}
 
 .turn-ring {
   width: 140%;
   height: 140%;
   position: absolute;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%) scale(1);
   left: 50%;
   top: 50%;
-  border: 3px dotted $primary-color;
+  opacity: 0.5;
+  // border: 3px dotted $primary-color;
+  background: $red-orange;
   border-radius: 50%;
+  animation: 1s infinite turn-billow;
+}
+
+
+@keyframes turn-billow {
+  0% {
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+}
+@keyframes turn-flow {
+  0% {
+    left: 50%;
+    top: 40%;
+  }
+  12% {
+    left: 55%;
+    top: 45%;
+  }
+  25% {
+    left: 60%;
+    top: 50%;
+  }
+  37% {
+    left: 55%;
+    top: 55%;
+  }
+  50% {
+    left: 50%;
+    top: 60%;
+  }
+  67% {
+    left: 45%;
+    top: 55%;
+  }
+  75% {
+    left: 40%;
+    top: 50%;
+  }
+  87% {
+    left: 45%;
+    top: 45%;
+  }
+  100% {
+    left: 50%;
+    top: 40%;
+  }
 }
 </style>
