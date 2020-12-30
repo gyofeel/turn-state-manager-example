@@ -38,7 +38,6 @@
 </template>
 
 <script>
-import EventBus from '../utils/EventBus';
 import { CONTROL_TYPE } from '../config/constants';
 
 export default {
@@ -50,9 +49,6 @@ export default {
 			isStarted: true
 		}
 	},
-	created() {
-		EventBus
-	},	
 	methods: {
 		onClickPrevTurn() {
 			this.$emit('control', {
@@ -97,7 +93,7 @@ export default {
 @import 'src/style/main';
 
 .controller {
-	width: 30%;
+	width: 100%;
 	min-width: 400px;
 	display: flex;
 	flex-flow: column nowrap;

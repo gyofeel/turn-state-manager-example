@@ -37,7 +37,7 @@
             :key="index"
             :name="player.name"
             :isTurn="index === turnIndex"
-            :time="index === turnIndex ? turnTime : 0"
+            :time="isAuto && index === turnIndex ? turnTime : 0"
           />
         </div>
         <div class="info-container">
@@ -45,11 +45,9 @@
               class="turn-controller"
               @control="onControl"
             />
-          <div class="command-wrap">
             <CommandDisplayer
               class="turn-command-displayer"
             />
-          </div>
         </div>
       </section>
     </div>
@@ -58,13 +56,15 @@
 
 <script>
 import { turnStateManager, EVENT } from "turn-state-manager";
+import { CONTROL_TYPE } from './config/constants'
+import EventBus from './utils/EventBus';
 
 import Piece from "./components/Piece";
 import TimeDisplayer from "./components/TimeDisplayer";
 import CommandDisplayer from './components/CommandDisplayer';
 import Controller from './components/Controller';
 
-const PLAER_NAME_LIST = ["A", "B", "C", "D", "E"];
+const PLAER_NAME_LIST = ["A", "B", "C", "D", "E", "F", "G", "H"];
 
 export default {
   name: "App",
@@ -94,12 +94,22 @@ export default {
     this.turnGame = turnStateManager.setGame("turnGameId", {
       turnIndex: 0,
       turnNumber: this.playerList.length,
-      turnTime: 2000,
+      turnTime: 3000,
       totalTime: 50000,
       turnTimeTickCallback: this.onTurnTimeTick,
       totalTimeTickCallback: this.onTotalTimeTick,
       auto: this.isAuto,
       loop: this.isLoop,
+    });
+    this.$nextTick(() => {
+      EventBus.$emit('command', {
+        title: 'Set Game.',
+        command: `const turnGame = turnStateManager.setGame("id", {<br />
+         turnIndex: 0,<br />
+         turnTime: 2000,<br />
+         totalTime: 50000,<br />
+        });`
+      });
     });
     this.turnGame.on(EVENT.START, this.onStart);
     this.turnGame.on(EVENT.PREV_TURN, this.onPrevTurn);
@@ -107,35 +117,48 @@ export default {
     this.turnGame.on(EVENT.COMPLETE, this.onComplete);
     this.turnGame.on(EVENT.END, this.onEnd);
     this.turnGame.start();
-
-    // setTimeout(() => {
-    //   this.turnGame.emit(EVENT.PREV_TURN);
-    // }, 15000);
   },
   methods: {
-    // onToggleAuto() {
-    //   this.isAuto = !this.isAuto;
-    //   this.turnGame.setAutoOption(this.isAuto);
-    // },
-    // onToggleLoop() {
-    //   this.isLoop = !this.isLoop;
-    //   this.turnGame.setLoopOption(this.isLoop);
-    // },
-    // onClickNextTurn() {
-    //   this.turnGame.emit(EVENT.NEXT_TURN);
-    // },
-    // onClickPrevTurn() {
-    //   this.turnGame.emit(EVENT.PREV_TURN);
-    // },
-    // onClickBegin() {
-    //   this.turnGame.emit(EVENT.END);
-    //   this.turnGame.start();
-    // },  
-    // onClickFinish() {
-    //   this.turnGame.emit(EVENT.END);
-    // },
     onControl(e) {
-      console.log(e);
+      const { type } = e;
+      let title = '';
+      let command = '';
+      if (type === CONTROL_TYPE.PREV) {
+        this.turnGame.emit(EVENT.PREV_TURN);
+        title = 'Go to the turn as small as 1.';
+        command = 'turnGame.emit(EVENT.PREV_TURN);';
+      } else if (type === CONTROL_TYPE.NEXT) {
+        this.turnGame.emit(EVENT.NEXT_TURN);
+        title = 'Go to the turn as big as 1.'
+        command = 'turnGame.emit(EVENT.NEXT_TURN);';
+      } else if (type === CONTROL_TYPE.AUTO) {
+        this.isAuto = e.value.auto;
+        this.turnGame.setAutoOption(this.isAuto);
+        title = `Set auto option to ${this.isAuto}.`;
+        command = `turnGame.setAutoOption(${this.isAuto});`
+      } else if (type === CONTROL_TYPE.LOOP) {
+        this.isLoop = e.value.loop;
+        this.turnGame.setLoopOption(this.isLoop);
+        title = `Set loop option to ${this.isLoop}.`;
+        command = `turnGame.setLoopOption(${this.isLoop});`;
+      } else if (type === CONTROL_TYPE.START) {
+        this.turnGame.emit(EVENT.END);
+        this.turnGame.start();
+        title = 'Let the game start.';
+        command = 'turnGame.emit(EVENT.END);<br />turnGame.start();';
+      } else if (type === CONTROL_TYPE.END) {
+        this.turnGame.emit(EVENT.END);
+        title = 'Let the game over.'
+        command = 'turnGame.emit(EVENT.END);';
+      }
+
+      EventBus.$emit('command', {
+        title,
+        command
+      });
+    },
+    onClickIcon(url) {
+      window.open(url);
     },
     onStart(e) {
       this.turnIndex = e.index;
@@ -153,7 +176,7 @@ export default {
       console.log(e.type);
     },
     onTurnTimeTick(e) {
-      this.turnTime = 2000 - e.timerCount;
+      this.turnTime = 3000 - e.timerCount;
     },
     onTotalTimeTick(e) {
       this.totalTime = 50000 - e.timerCount;
@@ -249,10 +272,16 @@ export default {
   }
   .info-container {
     width: 85%;
-    margin-top: 15%;
+    margin-top: 11%;
     display: flex;
     flex-flow: row wrap;
     justify-content: space-between;
+    .turn-controller {
+      width: 30%;
+    }
+    .turn-command-displayer {
+      width: 45%;
+    }
   }
 }
 </style>
