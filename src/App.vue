@@ -4,7 +4,22 @@
     <div class="main-wrap">
       <section class="header">
         <div class="title-wrap">
-          <span class="title">Turn State Manager</span>
+          <div class="logo"></div>
+          <div class="title">
+            Turn State Manager
+            <font-awesome-icon 
+              class="icon-github"
+              :icon="['fab', 'github']"
+              size="lg"
+              @click="onClickIcon('https://github.com/gyofeel/turn-state-manager')"
+            />
+            <font-awesome-icon 
+              class="icon-npm"
+              :icon="['fab', 'npm']" 
+              size="lg"
+              @click="onClickIcon('https://www.npmjs.com/package/turn-state-manager')"
+            />
+          </div>
         </div>
         <div class="total-timer-wrap">
           <!-- <div class="displayer-title">COUNT</div> -->
@@ -171,11 +186,44 @@ export default {
   align-items: center;
   width: 90%;
   height: 100px;
-  .title {
-    font-size: $font-m;
-    font-weight: bold;
+  .title-wrap {
+    display: flex;
   }
-
+  .logo {
+    width: 36px;
+    height: 36px;
+    position: relative;
+    background: $red-orange;
+    border-radius: 128px;
+    overflow: hidden;
+    &::after {
+      content: '';
+      width: 36px;
+      height: 36px;
+      position: absolute;
+      transform: translate(-50%, -50%);
+      background:$yellow; 
+      border-radius: 18px;
+      left: 50%;
+      top: 30%;
+    }
+  }
+  .title {
+    font-size: $font-l;
+    font-weight: bold;
+    display: flex;
+    align-items: baseline;
+    margin-left: 10px;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande';
+  }
+  .icon-github {
+    padding-left: 15px;
+    cursor: pointer;
+  }
+  .icon-npm {
+    padding-left: 10px;
+    cursor: pointer;
+  }
   .total-timer-wrap {
     display: flex;
     flex-flow: column nowrap;
