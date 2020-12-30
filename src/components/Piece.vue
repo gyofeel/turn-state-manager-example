@@ -63,7 +63,7 @@ export default {
     },
     setSize() {
       const innerWindowSize = Math.min(window.innerWidth, window.innerHeight);
-      const size = innerWindowSize / 8;
+      const size = innerWindowSize / 10;
 
       this.size = size;
     },
@@ -76,6 +76,7 @@ export default {
 
 .piece-wrap {
   position: relative;
+  font-size: 16px;
 }
 .piece {
   min-width: 30px;
@@ -138,6 +139,11 @@ export default {
   animation: 1s infinite turn-billow;
 }
 
+@media screen and (max-width: 890px) {
+  .piece-wrap {
+    font-size: 10px;
+  }
+}
 
 @keyframes turn-billow {
   0% {

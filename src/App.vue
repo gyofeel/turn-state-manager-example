@@ -1,6 +1,13 @@
 <template>
   <div id="app">
-    <div class="bg"></div> 
+    <div 
+      class="bg"
+      ref="bg"
+      :style="{
+        width: `${bgWidth}px`,
+        height: `${bgHeight}px`
+      }"
+    ></div> 
     <div class="main-wrap">
       <section class="header">
         <div class="title-wrap">
@@ -13,6 +20,10 @@
               size="lg"
               @click="onClickIcon('https://github.com/gyofeel/turn-state-manager')"
             />
+            <!-- <font-awesome-icon
+              :icon="['fas', 'chevron-right']"
+              size="2x"
+            /> -->
             <font-awesome-icon 
               class="icon-npm"
               :icon="['fab', 'npm']" 
@@ -28,11 +39,16 @@
             :timeValue="totalTime"
             :type="'large'"
           />
+          <ArrowsLine 
+            class="arrows-line"
+            :direction="'prev'"
+          />
         </div>
       </section>
       <section class="content">
         <div class="players-container">
           <Piece
+            class="turn-piece"
             v-for="(player, index) in playerList"
             :key="index"
             :name="player.name"
@@ -41,12 +57,12 @@
           />
         </div>
         <div class="info-container">
+            <CommandDisplayer
+              class="turn-command-displayer"
+            />
             <Controller
               class="turn-controller"
               @control="onControl"
-            />
-            <CommandDisplayer
-              class="turn-command-displayer"
             />
         </div>
       </section>
@@ -63,6 +79,7 @@ import Piece from "./components/Piece";
 import TimeDisplayer from "./components/TimeDisplayer";
 import CommandDisplayer from './components/CommandDisplayer';
 import Controller from './components/Controller';
+import ArrowsLine from './components/ArrowsLine';
 
 const PLAER_NAME_LIST = ["A", "B", "C", "D", "E", "F", "G", "H"];
 
@@ -72,10 +89,13 @@ export default {
     Piece,
     TimeDisplayer,
     CommandDisplayer,
-    Controller
+    Controller,
+    ArrowsLine
   },
   data() {
     return {
+      bgWidth: 0,
+      bgHeight: 0,
       turnStateManager: null,
       playerList: PLAER_NAME_LIST.map((playerName, index) => {
         return {
@@ -118,7 +138,27 @@ export default {
     this.turnGame.on(EVENT.END, this.onEnd);
     this.turnGame.start();
   },
+  mounted() {
+    window.addEventListener('resize', this.setBg);
+    this.setBg();
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.setBg);
+
+    this.turnGame.off(EVENT.START, this.onStart);
+    this.turnGame.off(EVENT.PREV_TURN, this.onPrevTurn);
+    this.turnGame.off(EVENT.NEXT_TURN, this.onNextTurn);
+    this.turnGame.off(EVENT.COMPLETE, this.onComplete);
+    this.turnGame.off(EVENT.END, this.onEnd);
+  },
   methods: {
+    setBg() {
+      const bgWidth = Math.max(document.body.scrollWidth, window.innerWidth);
+      const bgHeight = Math.max(document.body.scrollHeight, window.innerHeight);
+
+      this.bgWidth = bgWidth;
+      this.bgHeight = bgHeight;
+    },
     onControl(e) {
       const { type } = e;
       let title = '';
@@ -201,13 +241,15 @@ export default {
   align-items: center;
   color: $text-color;
   width: 100%;
+  overflow: scroll;
+  padding-bottom: 30px;
 }
 .header {
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
-  align-items: center;
-  width: 90%;
+  margin-top: 25px;
+  width: 85%;
   height: 100px;
   .title-wrap {
     display: flex;
@@ -217,7 +259,7 @@ export default {
     height: 36px;
     position: relative;
     background: $red-orange;
-    border-radius: 128px;
+    border-radius: 18px;
     overflow: hidden;
     &::after {
       content: '';
@@ -263,24 +305,81 @@ export default {
   flex-flow: column nowrap;
   justify-content: space-between;
   align-items: center;
-  margin-top: 130px;
-  
+  margin-top: 10px;
+
   .players-container {
     width: 85%;
     display: flex;
-    justify-content: space-between;
+    flex-flow: row wrap;
+    justify-content: center;
+    .turn-piece {
+      margin: 2%;
+    }
   }
   .info-container {
     width: 85%;
-    margin-top: 11%;
+    margin-top: 7%;
     display: flex;
     flex-flow: row wrap;
-    justify-content: space-between;
+    justify-content: center;
+    align-items: flex-end;
+    .turn-command-displayer {
+      width: 30%;
+      margin: 0 3%;
+    }
     .turn-controller {
       width: 30%;
+      margin: 0 3%;
     }
-    .turn-command-displayer {
-      width: 45%;
+  }
+}
+
+@media screen and (max-width: 890px) {
+  .main-wrap {
+    padding-bottom: 240px;
+  }
+  .header {
+    flex-flow: column nowrap;
+    align-items: center;
+
+    .logo {
+      width: 24px;
+      height: 24px;
+      border-radius: 12px;
+      &::after {
+        width: 24px;
+        height: 24px;
+        border-radius: 12px;
+      }
+    }
+    .title {
+      font-size: $font-s;
+    }
+    .total-timer-wrap {
+      margin-top: 20px;
+      width: 90%;
+    }
+  }
+
+  .content {
+    .players-container {
+      width: 90%;
+    }
+    .info-container {
+      width: 90%;
+      .turn-command-displayer {
+        width: 100%;
+      }
+      .turn-controller {
+        width: 100%;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        background: $dark-gray;
+        border-top: 5px solid $red-orange;
+        border-radius: 15px;
+        margin: 0;
+      }
     }
   }
 }

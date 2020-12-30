@@ -68,8 +68,9 @@ export default {
 @import 'src/style/main';
 
 .command-displayer {
+	font-size: 16px;
 	width: 100%;
-	min-width: 400px;
+	min-width: 250px;
 	height: 320px;
 	padding: 10px 3% 10px;
 	background: $white;
@@ -106,18 +107,26 @@ export default {
 			font-weight: bold;
 			font-size: $font-m;
 			font-family: 'Courier New', Courier, monospace;
+			word-wrap: break-word;
 		}
 	}
+}
 
-	@keyframes show {
-		0% {
-			opacity: 0;
-			transform: translateY(30px);
-		}
-		100% {
-			opacity: 1;
-			transform: translateY(0);
-		}
+@media screen and (max-width: 890px) {
+	.command-displayer {
+		font-size: 12px;
+		height: 250px;
+	}
+}
+
+@keyframes show {
+	0% {
+		opacity: 0;
+		transform: translateY(30px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0);
 	}
 }
 </style>

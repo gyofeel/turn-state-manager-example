@@ -44,7 +44,7 @@ export default {
 @import 'src/style/main';
 
 .timer {
-  font-size: 2.5em;
+  font-size: $font-xxl;
   font-weight: bold;
   .time {
     text-align: right;
@@ -53,8 +53,17 @@ export default {
     font-size: $font-xs;
     font-weight: normal;
   }
+  &.--small {
+    font-size: $font-s;
+  }
 }
-.timer.--small {
-  font-size: 1em;
+
+@media screen and (max-width: 890px) {
+  .timer {
+    font-size: $font-l;
+    &.--small {
+      font-size: $font-s;
+    }
+  }
 }
 </style>

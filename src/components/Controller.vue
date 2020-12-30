@@ -93,12 +93,15 @@ export default {
 @import 'src/style/main';
 
 .controller {
+	font-size: 16px;
 	width: 100%;
-	min-width: 400px;
+	min-width: 370px;
 	display: flex;
 	flex-flow: column nowrap;
 	align-items: center;
 	padding: 3% 0;
+	-webkit-user-select: none;
+	user-select: none;
 	// border: 3px dotted $yellow;
 	// border-radius: 30px;
 	color: $dark-gray;
@@ -305,6 +308,17 @@ export default {
 			background: $yellow;
 			border-radius: 25px;
 			transition: 0.5s;
+		}
+	}
+}
+
+@media screen and (max-width: 890px) {
+	.controller {
+		font-size: 12px;
+		.power-btn {
+			margin-top: 5%;
+			width: 90%;
+			height: 65px;
 		}
 	}
 }
