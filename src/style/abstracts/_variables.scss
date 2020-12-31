@@ -1,0 +1,21 @@
+/** Color */
+// first-level
+$white: #f5f5f5;
+$yellow: #ffee38;
+$red-orange: #ff8269;
+$dark-gray: #4f5261;
+
+// second-level
+$text-color: $white;
+$primary-color: $yellow;
+$bg-color: $dark-gray;
+
+/** Typography */
+//size
+$font-xs: 0.5em;
+$font-s: 1em;
+$font-m: calc(1em * 1.2);
+$font-l: calc(1em * 1.2 * 1.2);
+$font-xl: calc(1em * 1.2 * 1.2 * 1.2);
+$font-xxl: calc(1em * 1.2 * 1.2 * 1.2 * 1.2);
+$font-xxxl: calc(1em * 1.2 * 1.2 * 1.2 * 1.2 * 1.2);
