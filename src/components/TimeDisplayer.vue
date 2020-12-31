@@ -66,8 +66,9 @@ export default {
 
 @media screen and (max-width: 890px) {
   .timer {
+    font-size: 10px;
     .time {
-      font-size: $font-l;
+      font-size: $font-xxxl;
     }
     .--small {
       .time {

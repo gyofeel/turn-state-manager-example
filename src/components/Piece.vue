@@ -87,12 +87,10 @@ export default {
   flex-flow: column wrap;
   justify-content: center;
   align-items: center;
-  // outline: 3px solid $primary-color;
-  // background: transparent;
   transition: 0.3s;
   overflow: hidden;
   &:hover {
-    cursor: pointer;
+    // cursor: pointer;
   }
 
   &::before {
@@ -133,7 +131,6 @@ export default {
   left: 50%;
   top: 50%;
   opacity: 0.5;
-  // border: 3px dotted $primary-color;
   background: $red-orange;
   border-radius: 50%;
   animation: 1s infinite turn-billow;
