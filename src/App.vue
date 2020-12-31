@@ -41,7 +41,7 @@
           />
           <ArrowsLine 
             class="arrows-line"
-            :direction="'prev'"
+            :direction="turnDirection"
           />
         </div>
       </section>
@@ -71,7 +71,7 @@
 </template>
 
 <script>
-import { turnStateManager, EVENT } from "turn-state-manager";
+import { turnStateManager } from "turn-state-manager";
 import { CONTROL_TYPE } from './config/constants'
 import EventBus from './utils/EventBus';
 
@@ -104,6 +104,7 @@ export default {
         };
       }),
       turnIndex: 0,
+      turnDirection: turnStateManager.NEXT_TURN,
       turnTime: 0,
       totalTime: 0,
       isAuto: true,
@@ -126,16 +127,18 @@ export default {
         title: 'Set Game.',
         command: `const turnGame = turnStateManager.setGame("id", {<br />
          turnIndex: 0,<br />
-         turnTime: 2000,<br />
+         turnNumber: 8,<br />
+         turnTime: 3000,<br />
          totalTime: 50000,<br />
         });`
       });
     });
-    this.turnGame.on(EVENT.START, this.onStart);
-    this.turnGame.on(EVENT.PREV_TURN, this.onPrevTurn);
-    this.turnGame.on(EVENT.NEXT_TURN, this.onNextTurn);
-    this.turnGame.on(EVENT.COMPLETE, this.onComplete);
-    this.turnGame.on(EVENT.END, this.onEnd);
+    const { START, PREV_TURN, NEXT_TURN, COMPLETE, END } = turnStateManager;
+    this.turnGame.on(START, this.onStart);
+    this.turnGame.on(PREV_TURN, this.onPrevTurn);
+    this.turnGame.on(NEXT_TURN, this.onNextTurn);
+    this.turnGame.on(COMPLETE, this.onComplete);
+    this.turnGame.on(END, this.onEnd);
     this.turnGame.start();
   },
   mounted() {
@@ -145,11 +148,12 @@ export default {
   beforeDestroy() {
     window.removeEventListener('resize', this.setBg);
 
-    this.turnGame.off(EVENT.START, this.onStart);
-    this.turnGame.off(EVENT.PREV_TURN, this.onPrevTurn);
-    this.turnGame.off(EVENT.NEXT_TURN, this.onNextTurn);
-    this.turnGame.off(EVENT.COMPLETE, this.onComplete);
-    this.turnGame.off(EVENT.END, this.onEnd);
+    const { START, PREV_TURN, NEXT_TURN, COMPLETE, END } = turnStateManager;
+    this.turnGame.off(START, this.onStart);
+    this.turnGame.off(PREV_TURN, this.onPrevTurn);
+    this.turnGame.off(NEXT_TURN, this.onNextTurn);
+    this.turnGame.off(COMPLETE, this.onComplete);
+    this.turnGame.off(END, this.onEnd);
   },
   methods: {
     setBg() {
@@ -163,14 +167,17 @@ export default {
       const { type } = e;
       let title = '';
       let command = '';
+    const { PREV_TURN, NEXT_TURN, END } = turnStateManager;
       if (type === CONTROL_TYPE.PREV) {
-        this.turnGame.emit(EVENT.PREV_TURN);
+        this.turnGame.emit(PREV_TURN);
+        this.turnDirection = this.turnGame.getAutoDirection();
         title = 'Go to the turn as small as 1.';
-        command = 'turnGame.emit(EVENT.PREV_TURN);';
+        command = 'turnGame.emit(turnStateManager.PREV_TURN);';
       } else if (type === CONTROL_TYPE.NEXT) {
-        this.turnGame.emit(EVENT.NEXT_TURN);
+        this.turnGame.emit(NEXT_TURN);
+        this.turnDirection = this.turnGame.getAutoDirection();
         title = 'Go to the turn as big as 1.'
-        command = 'turnGame.emit(EVENT.NEXT_TURN);';
+        command = 'turnGame.emit(turnStateManager.NEXT_TURN);';
       } else if (type === CONTROL_TYPE.AUTO) {
         this.isAuto = e.value.auto;
         this.turnGame.setAutoOption(this.isAuto);
@@ -182,14 +189,14 @@ export default {
         title = `Set loop option to ${this.isLoop}.`;
         command = `turnGame.setLoopOption(${this.isLoop});`;
       } else if (type === CONTROL_TYPE.START) {
-        this.turnGame.emit(EVENT.END);
+        this.turnGame.emit(END);
         this.turnGame.start();
         title = 'Let the game start.';
-        command = 'turnGame.emit(EVENT.END);<br />turnGame.start();';
+        command = 'turnGame.emit(turnStateManager.END);<br />turnGame.start();';
       } else if (type === CONTROL_TYPE.END) {
-        this.turnGame.emit(EVENT.END);
+        this.turnGame.emit(END);
         title = 'Let the game over.'
-        command = 'turnGame.emit(EVENT.END);';
+        command = 'turnGame.emit(turnStateManager.END);';
       }
 
       EventBus.$emit('command', {
@@ -201,19 +208,27 @@ export default {
       window.open(url);
     },
     onStart(e) {
+      const { type } = e;
       this.turnIndex = e.index;
+      EventBus.$emit('event', { type });
     },
     onPrevTurn(e) {
+      const { type } = e;
       this.turnIndex = e.index;
+      EventBus.$emit('event', { type });
     },
     onNextTurn(e) {
+      const { type } = e;
       this.turnIndex = e.index;
+      EventBus.$emit('event', { type });
     },
     onComplete(e) {
-      console.log(e.type);
+      const { type } = e;
+      EventBus.$emit('event', { type });
     },
     onEnd(e) {
-      console.log(e.type);
+      const { type } = e;
+      EventBus.$emit('event', { type });
     },
     onTurnTimeTick(e) {
       this.turnTime = 3000 - e.timerCount;
@@ -318,7 +333,7 @@ export default {
   }
   .info-container {
     width: 85%;
-    margin-top: 7%;
+    margin-top: 5%;
     display: flex;
     flex-flow: row wrap;
     justify-content: center;

@@ -31,23 +31,29 @@
 			</div> 
 		</div>
 		<div class="power-btn" @click="onClickBegin">
-			<span class="text">{{	isStarted ? 'END': 'START' }}</span>
+			<span class="text">{{	isRun ? 'END': 'START' }}</span>
 		</div>
 		<!-- <div class="" @click="onClickFinish">Finish the game!</div> -->
 	</div>
 </template>
 
 <script>
+import EventBus from '../utils/EventBus';
 import { CONTROL_TYPE } from '../config/constants';
-
 export default {
 	name: 'Controller',
 	data() {
 		return {
 			isAuto: true,
 			isLoop: true,
-			isStarted: true
+			isRun: true
 		}
+	},
+	created() {
+		EventBus.$on('event', this.onEvent);
+	},
+	beforeDestroy() {
+		EventBus.$off('event', this.onEvent);
 	},
 	methods: {
 		onClickPrevTurn() {
@@ -81,9 +87,17 @@ export default {
 		},
 		onClickBegin() {
 			this.$emit('control', {
-				type: this.isStarted ? CONTROL_TYPE.END : CONTROL_TYPE.START
+				type: this.isRun ? CONTROL_TYPE.END : CONTROL_TYPE.START
 			});
-			this.isStarted = !this.isStarted;
+		},
+		onEvent(e) {
+			const { type } = e;
+
+			if (type === 'end') {
+				this.isRun = false;
+			} else if (type === 'start') {
+				this.isRun = true;
+			}
 		}
 	}
 }
