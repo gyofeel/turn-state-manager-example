@@ -2,7 +2,7 @@
   <div 
 		class="arrows-line"
 		:class="{
-			'--prev': direction === 'prev'
+			'--prev': direction === turnStateManager.PREV_TURN
 		}"
   >
 		<font-awesome-icon
@@ -15,12 +15,19 @@
 </template>
 
 <script>
+import { turnStateManager } from 'turn-state-manager';
+
 export default {
 	name: 'arrowsLine',
 	props: {
 		direction: {
 			type: String,
-			validator: (dir) => ['prev', 'next'].findIndex(el => el === dir) > -1
+			validator: (dir) => [turnStateManager.PREV_TURN, turnStateManager.NEXT_TURN].findIndex(el => el === dir) > -1
+		}
+	},
+	data() {
+		return {
+			turnStateManager
 		}
 	}
 }
