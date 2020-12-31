@@ -9,7 +9,7 @@
     "deploy": "node ./node_modules/vue-gh-pages/index.js"
   },
   "wst": "/dist/",
-  "homepage": "https://github.com/gyofeel/turn-state-manager-example/",
+  "homepage": "https://github.com/gyofeel/turn-state-manager-example",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
     "@fortawesome/free-brands-svg-icons": "^5.15.1",
