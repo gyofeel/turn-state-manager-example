@@ -14,7 +14,7 @@
     "@fortawesome/vue-fontawesome": "^2.0.2",
     "@vue/cli-plugin-babel": "4.1.1",
     "gsap": "3.5.1",
-    "turn-state-manager": "^1.0.0",
+    "turn-state-manager": "^1.0.1",
     "vue": "^2.6.11"
   },
   "devDependencies": {
