@@ -44,9 +44,10 @@ export default {
 @import 'src/style/main';
 
 .timer {
-  font-size: $font-xxl;
   font-weight: bold;
+  font-size: 16px;
   .time {
+    font-size: $font-xxl;
     text-align: right;
   }
   .unit {
@@ -54,15 +55,24 @@ export default {
     font-weight: normal;
   }
   &.--small {
-    font-size: $font-s;
+    .time {
+      font-size: $font-s;
+    }
+    .unit {
+      font-size: $font-xs;
+    }
   }
 }
 
 @media screen and (max-width: 890px) {
   .timer {
-    font-size: $font-l;
-    &.--small {
-      font-size: $font-s;
+    .time {
+      font-size: $font-l;
+    }
+    .--small {
+      .time {
+        font-size: $font-xs;
+      }
     }
   }
 }
