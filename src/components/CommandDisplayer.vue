@@ -48,16 +48,6 @@ export default {
 	mounted() {
 		this.ref = this.$refs.commandDisplayer;
 	},
-	watch: {
-		commandList: {
-			deep: true,
-			handler: (list) => {
-				if (list.length > 15) {
-					list.shift();
-				}
-			}
-		}
-	},
 	methods: {
 		onEvent(e) {
 			const { type } = e;
